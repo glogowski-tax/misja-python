@@ -1103,15 +1103,18 @@
     if (ch && ch.missions.every((m) => P().done[m.id]) && !P().reported[ch.key]) {
       P().reported[ch.key] = true;
       const total = ch.missions.length;
-      const noSol = ch.missions.filter((m) => !P().solUsed[m.id]).length;
+      // celność jak w matematyce: udane próby / wszystkie kliknięcia „Sprawdź"
+      const attempts = ch.missions.reduce((s, m) => s + (P().fails[m.id] || 0) + 1, 0);
+      // podglądanie rozwiązań raportujemy osobno, w statusie
+      const solCount = ch.missions.filter((m) => P().solUsed[m.id]).length;
       sendReport({
         name: activeProfile().name,
         dzial: "Python · " + ch.name,
         zadania: String(total),
         poprawne: String(total),
-        celnosc: Math.round(noSol / total * 100) + "%",
+        celnosc: Math.round(total / attempts * 100) + "%",
         poziom: String(level()),
-        status: "Ukończony"
+        status: solCount ? "Ukończony (" + solCount + " z rozwiązaniem)" : "Ukończony"
       });
       setTimeout(() => toast("📤", "Rozdział „" + ch.name + "” ukończony — raport wysłany!"), 900);
     }

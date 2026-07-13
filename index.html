@@ -247,6 +247,7 @@
   .verdict.ok { background: var(--success-soft); color: var(--success); }
   .verdict.no { background: var(--danger-soft); color: var(--danger); }
   .verdict.hint { background: var(--blue-soft); color: var(--ink); }
+  .verdict .hint-more { display: block; margin-top: 8px; font-size: 12px; color: var(--ink-faint); }
   .verdict b { font-family: var(--font-display); font-size: 16px; display: block; margin-bottom: 3px; }
   .verdict pre {
     font-family: var(--font-code); font-size: 12.5px; margin: 8px 0 0;
@@ -406,7 +407,8 @@
           { type: "code", re: /print/, msg: "Użyj polecenia print(...)" },
           { type: "output", equals: "Cześć, świecie!" }
         ],
-        hint: `Wpisz: <code>print("Cześć, świecie!")</code> — zwróć uwagę na przecinek i wykrzyknik.`,
+        hints: [`Wystarczy jedna linijka: print, a w nawiasie tekst w cudzysłowach.`,
+                `Wpisz: <code>print("Cześć, świecie!")</code> — zwróć uwagę na przecinek i wykrzyknik.`],
         solution: `print("Cześć, świecie!")`
       },
       {
@@ -418,7 +420,8 @@
         checks: [
           { type: "lines", equals: ["Ala", "ma", "pytona"] }
         ],
-        hint: `Użyj trzech printów, każdy w osobnej linii: <code>print("Ala")</code>, potem <code>print("ma")</code>…`,
+        hints: [`Trzy printy, jeden pod drugim — każdy wypisze swoją linię.`,
+                `Użyj trzech printów, każdy w osobnej linii: <code>print("Ala")</code>, potem <code>print("ma")</code>…`],
         solution: `print("Ala")\nprint("ma")\nprint("pytona")`
       },
       {
@@ -432,7 +435,8 @@
           { type: "code", re: /,\s*12\s*,/, msg: "Liczba 12 ma być osobnym elementem między przecinkami (bez cudzysłowów)." },
           { type: "output", equals: "Mam 12 lat" }
         ],
-        hint: `<code>print("Mam", 12, "lat")</code> — przecinki dodają spacje automatycznie.`,
+        hints: [`Jeden print, trzy elementy oddzielone przecinkami. Liczba bez cudzysłowów.`,
+                `<code>print("Mam", 12, "lat")</code> — przecinki dodają spacje automatycznie.`],
         solution: `print("Mam", 12, "lat")`
       },
       {
@@ -444,7 +448,8 @@
         checks: [
           { type: "output", equals: "To działa!" }
         ],
-        hint: `Spójrz na koniec linii: tekst zaczyna się cudzysłowem, ale czy się nim kończy? Dopisz <code>"</code> przed nawiasem.`,
+        hints: [`Policz cudzysłowy w linijce — każdy otwarty musi mieć swoją parę.`,
+                `Spójrz na koniec linii: tekst zaczyna się cudzysłowem, ale czy się nim kończy? Dopisz <code>"</code> przed nawiasem.`],
         solution: `print("To działa!")`
       }
     ] },
@@ -460,7 +465,8 @@
           { type: "code", re: /print\s*\([^)]*bohater/, msg: "W print użyj zmiennej bohater — bez cudzysłowów wokół niej." },
           { type: "output", equals: "Mój bohater to Pyton" }
         ],
-        hint: `Pierwsza linia: <code>bohater = "Pyton"</code>. Druga: <code>print("Mój bohater to", bohater)</code>.`,
+        hints: [`Dwie linie: najpierw stwórz zmienną znakiem =, potem print z tekstem i zmienną po przecinku.`,
+                `Pierwsza linia: <code>bohater = "Pyton"</code>. Druga: <code>print("Mój bohater to", bohater)</code>.`],
         solution: `bohater = "Pyton"\nprint("Mój bohater to", bohater)`
       },
       {
@@ -475,7 +481,8 @@
           { type: "code", re: /a\s*\+\s*b/, msg: "Dodaj zmienne do siebie: a + b." },
           { type: "output", equals: "12" }
         ],
-        hint: `Trzy linie: <code>a = 7</code>, <code>b = 5</code>, <code>print(a + b)</code>.`,
+        hints: [`Trzy linie: dwie tworzą zmienne, trzecia wypisuje ich sumę.`,
+                `Trzy linie: <code>a = 7</code>, <code>b = 5</code>, <code>print(a + b)</code>.`],
         solution: `a = 7\nb = 5\nprint(a + b)`
       },
       {
@@ -489,7 +496,8 @@
           { type: "codeNot", re: /35/, msg: "Nie wpisuj 35 — niech Python sam to policzy!" },
           { type: "output", equals: "7 razy 5 to 35" }
         ],
-        hint: `<code>print("7 razy 5 to", 7 * 5)</code>`,
+        hints: [`Drugim elementem printa (po przecinku) zrób działanie z gwiazdką.`,
+                `<code>print("7 razy 5 to", 7 * 5)</code>`],
         solution: `print("7 razy 5 to", 7 * 5)`
       },
       {
@@ -502,7 +510,8 @@
           { type: "code", re: /input\s*\(/, msg: "Użyj input(...) do zapytania o imię." },
           { type: "outputContains", text: "Miło Cię poznać, Antek" }
         ],
-        hint: `<code>imie = input("Jak masz na imię? ")</code>, potem <code>print("Miło Cię poznać,", imie)</code>.`,
+        hints: [`Schowaj wynik input(...) do zmiennej, potem użyj jej w print po przecinku.`,
+                `<code>imie = input("Jak masz na imię? ")</code>, potem <code>print("Miło Cię poznać,", imie)</code>.`],
         solution: `imie = input("Jak masz na imię? ")\nprint("Miło Cię poznać,", imie)`
       },
       {
@@ -515,7 +524,8 @@
           { type: "code", re: /int\s*\(/, msg: "Zamień tekst na liczbę funkcją int(...)." },
           { type: "outputContains", text: "7" }
         ],
-        hint: `<code>a = int(input("Pierwsza: "))</code>, <code>b = int(input("Druga: "))</code>, <code>print("Suma to", a + b)</code>.`,
+        hints: [`Owiń każdy input w int(...), zapisz do dwóch zmiennych i wypisz sumę.`,
+                `<code>a = int(input("Pierwsza: "))</code>, <code>b = int(input("Druga: "))</code>, <code>print("Suma to", a + b)</code>.`],
         solution: `a = int(input("Pierwsza liczba: "))\nb = int(input("Druga liczba: "))\nprint("Suma to", a + b)`
       }
     ] },
@@ -531,7 +541,8 @@
           { type: "code", re: />=/, msg: "Użyj porównania >= (większe lub równe)." },
           { type: "output", equals: "Możesz obejrzeć ten film" }
         ],
-        hint: `<code>if wiek >= 12:</code> a w następnej linii, wcięte 4 spacjami: <code>print("Możesz obejrzeć ten film")</code>.`,
+        hints: [`Warunek to wiek >= 12. Po nim dwukropek, a print w nowej linii z wcięciem.`,
+                `<code>if wiek >= 12:</code> a w następnej linii, wcięte 4 spacjami: <code>print("Możesz obejrzeć ten film")</code>.`],
         solution: `wiek = 13\nif wiek >= 12:\n    print("Możesz obejrzeć ten film")`
       },
       {
@@ -545,7 +556,8 @@
           { type: "code", re: /else/, msg: "Dodaj gałąź else." },
           { type: "output", equals: "Parzysta" }
         ],
-        hint: `<code>if liczba % 2 == 0:</code> → print("Parzysta"), <code>else:</code> → print("Nieparzysta").`,
+        hints: [`Sprawdź resztę z dzielenia przez 2 (operator %). Drugą możliwość załatwi else.`,
+                `<code>if liczba % 2 == 0:</code> → print("Parzysta"), <code>else:</code> → print("Nieparzysta").`],
         solution: `liczba = 10\nif liczba % 2 == 0:\n    print("Parzysta")\nelse:\n    print("Nieparzysta")`
       },
       {
@@ -558,7 +570,8 @@
           { type: "code", re: /elif/, msg: "Użyj elif do środkowego warunku." },
           { type: "output", equals: "Bardzo dobrze!" }
         ],
-        hint: `Trzy gałęzie: <code>if punkty >= 90:</code>, <code>elif punkty >= 70:</code>, <code>else:</code> — każda ze swoim printem (wciętym!).`,
+        hints: [`Trzy gałęzie od największego progu w dół: if, elif, else — każda z printem.`,
+                `Trzy gałęzie: <code>if punkty >= 90:</code>, <code>elif punkty >= 70:</code>, <code>else:</code> — każda ze swoim printem (wciętym!).`],
         solution: `punkty = 85\nif punkty >= 90:\n    print("Celująco!")\nelif punkty >= 70:\n    print("Bardzo dobrze!")\nelse:\n    print("Ćwicz dalej!")`
       },
       {
@@ -571,7 +584,8 @@
           { type: "code", re: /if/, msg: "Zostaw instrukcję if w programie." },
           { type: "output", equals: "Tajne drzwi otwarte!" }
         ],
-        hint: `Linia z print musi być wcięta — dodaj przed nią 4 spacje.`,
+        hints: [`Błąd pokazuje numer linii. Co teoria mówi o liniach po dwukropku?`,
+                `Linia z print musi być wcięta — dodaj przed nią 4 spacje.`],
         solution: `haslo = "smok"\nif haslo == "smok":\n    print("Tajne drzwi otwarte!")`
       }
     ] },
@@ -588,7 +602,8 @@
           { type: "codeNot", re: /print[\s\S]*print/, msg: "Wystarczy JEDEN print — pętla zrobi resztę." },
           { type: "lines", equals: ["Hop!", "Hop!", "Hop!", "Hop!", "Hop!"] }
         ],
-        hint: `<code>for i in range(5):</code> a pod spodem (wcięte): <code>print("Hop!")</code>.`,
+        hints: [`Pętla for z range powtórzy wcięty print — pięć powtórzeń.`,
+                `<code>for i in range(5):</code> a pod spodem (wcięte): <code>print("Hop!")</code>.`],
         solution: `for i in range(5):\n    print("Hop!")`
       },
       {
@@ -601,7 +616,8 @@
           { type: "code", re: /for\s/, msg: "Użyj pętli for." },
           { type: "lines", equals: ["1","2","3","4","5","6","7","8","9","10"] }
         ],
-        hint: `<code>for i in range(1, 11):</code> i wcięte <code>print(i)</code>. Pamiętaj: 11, nie 10!`,
+        hints: [`range ma dwa końce: start to 1, a stop o jeden WIĘKSZY niż ostatnia liczba.`,
+                `<code>for i in range(1, 11):</code> i wcięte <code>print(i)</code>. Pamiętaj: 11, nie 10!`],
         solution: `for i in range(1, 11):\n    print(i)`
       },
       {
@@ -614,7 +630,8 @@
           { type: "code", re: /range/, msg: "Użyj range z krokiem -1." },
           { type: "lines", equals: ["5","4","3","2","1","Start!"] }
         ],
-        hint: `<code>for i in range(5, 0, -1):</code> → print(i), a PO pętli (bez wcięcia): <code>print("Start!")</code>.`,
+        hints: [`range przyjmie trzeci składnik — krok -1. A Start! wypisz po pętli, bez wcięcia.`,
+                `<code>for i in range(5, 0, -1):</code> → print(i), a PO pętli (bez wcięcia): <code>print("Start!")</code>.`],
         solution: `for i in range(5, 0, -1):\n    print(i)\nprint("Start!")`
       },
       {
@@ -628,7 +645,8 @@
           { type: "codeNot", re: /5050/, msg: "Nie wpisuj wyniku — niech Python go policzy!" },
           { type: "output", equals: "5050" }
         ],
-        hint: `Skarbonka: <code>suma = 0</code>, pętla <code>for i in range(1, 101):</code>, w środku <code>suma = suma + i</code>, po pętli <code>print(suma)</code>.`,
+        hints: [`Zmienna-skarbonka: zacznij od 0, a pętla niech dokłada do niej kolejne i.`,
+                `Skarbonka: <code>suma = 0</code>, pętla <code>for i in range(1, 101):</code>, w środku <code>suma = suma + i</code>, po pętli <code>print(suma)</code>.`],
         solution: `suma = 0\nfor i in range(1, 101):\n    suma = suma + i\nprint(suma)`
       },
       {
@@ -642,7 +660,8 @@
           { type: "code", re: /7\s*\*\s*i|i\s*\*\s*7/, msg: "Wynik ma liczyć Python: 7 * i." },
           { type: "lines", equals: ["7 x 1 = 7","7 x 2 = 14","7 x 3 = 21","7 x 4 = 28","7 x 5 = 35","7 x 6 = 42","7 x 7 = 49","7 x 8 = 56","7 x 9 = 63","7 x 10 = 70"] }
         ],
-        hint: `<code>for i in range(1, 11):</code> a w środku: <code>print(7, "x", i, "=", 7 * i)</code>.`,
+        hints: [`W pętli jeden print z elementami po przecinku — wynik niech policzy 7 * i.`,
+                `<code>for i in range(1, 11):</code> a w środku: <code>print(7, "x", i, "=", 7 * i)</code>.`],
         solution: `for i in range(1, 11):\n    print(7, "x", i, "=", 7 * i)`
       }
     ] },
@@ -657,7 +676,8 @@
           { type: "code", re: /import\s+turtle/, msg: "Zacznij od: import turtle." },
           { type: "code", re: /forward\s*\(/, msg: "Użyj forward(...), żeby żółw poszedł do przodu." }
         ],
-        hint: `<code>zolw = turtle.Turtle()</code>, potem <code>zolw.forward(100)</code>.`,
+        hints: [`Dwa kroki: stwórz żółwia (turtle.Turtle()), potem każ mu iść do przodu.`,
+                `<code>zolw = turtle.Turtle()</code>, potem <code>zolw.forward(100)</code>.`],
         solution: `import turtle\nzolw = turtle.Turtle()\nzolw.forward(100)`
       },
       {
@@ -671,7 +691,8 @@
           { type: "code", re: /forward\s*\(/, msg: "Użyj forward(...)." },
           { type: "code", re: /right\s*\(\s*90|left\s*\(\s*90/, msg: "Skręcaj o 90 stopni: right(90) lub left(90)." }
         ],
-        hint: `<code>for i in range(4):</code> a w środku dwie wcięte linie: forward(100) i right(90).`,
+        hints: [`Kwadrat to 4 powtórzenia pary ruchów: do przodu i skręt o 90 stopni.`,
+                `<code>for i in range(4):</code> a w środku dwie wcięte linie: forward(100) i right(90).`],
         solution: `import turtle\nzolw = turtle.Turtle()\nfor i in range(4):\n    zolw.forward(100)\n    zolw.right(90)`
       },
       {
@@ -685,7 +706,8 @@
           { type: "code", re: /144/, msg: "Sekret gwiazdy to kąt 144 stopnie." },
           { type: "code", re: /forward\s*\(/, msg: "Użyj forward(...)." }
         ],
-        hint: `<code>for i in range(5):</code> → forward(150) i right(144).`,
+        hints: [`Jak kwadrat, ale 5 powtórzeń i ostrzejszy kąt — 144 stopnie.`,
+                `<code>for i in range(5):</code> → forward(150) i right(144).`],
         solution: `import turtle\nzolw = turtle.Turtle()\nfor i in range(5):\n    zolw.forward(150)\n    zolw.right(144)`
       },
       {
@@ -699,7 +721,8 @@
           { type: "code", re: /for\s/, msg: "Użyj pętli for." },
           { type: "code", re: /forward\s*\(\s*i/, msg: "Długość kroku ma rosnąć: forward(i * 3)." }
         ],
-        hint: `<code>zolw.color("purple")</code>, potem <code>for i in range(60):</code> → forward(i * 3), right(90).`,
+        hints: [`Kolor ustaw przed pętlą, a w pętli użyj i w długości kroku — to robi spiralę.`,
+                `<code>zolw.color("purple")</code>, potem <code>for i in range(60):</code> → forward(i * 3), right(90).`],
         solution: `import turtle\nzolw = turtle.Turtle()\nzolw.speed(0)\nzolw.color("purple")\nfor i in range(60):\n    zolw.forward(i * 3)\n    zolw.right(90)`
       }
     ] }
@@ -710,7 +733,7 @@
     theory: `<p>Twoje laboratorium! Tu nie ma zadania ani sprawdzania — pisz, co chcesz, i eksperymentuj. Działa wszystko, czego się nauczyłeś: print, zmienne, input, if, pętle i żółw.</p>`,
     task: `Wolne kodowanie — spróbuj np. zmienić liczby i kolory w spirali, albo napisz własny pomysł.`,
     starter: `import turtle\nzolw = turtle.Turtle()\nzolw.speed(0)\nzolw.color("orange")\nfor i in range(36):\n    zolw.forward(120)\n    zolw.right(170)\nprint("Gotowe! Zmień liczby i zobacz, co się stanie.")`,
-    checks: [], hint: "", solution: ""
+    checks: [], hints: [], solution: ""
   };
 
   function normOut(s) {
@@ -996,6 +1019,7 @@
     $("nextBtn").hidden = true;
     $("checkBtn").style.display = m.sandbox ? "none" : "";
     $("hintBtn").style.display = m.sandbox ? "none" : "";
+    updateHintBtn();
     $("solBtn").hidden = !( !m.sandbox && (P().fails[m.id] || 0) >= 3 );
     $("turtleWrap").hidden = !m.turtle;
     $("ioGrid").className = "io" + (m.turtle ? " with-turtle" : "");
@@ -1096,11 +1120,22 @@
   }
 
   // ---------- pomoc ----------
+  const hintShown = {}; // ile poziomów podpowiedzi już odsłonięto (per misja, na czas sesji)
+  function updateHintBtn() {
+    if (!cur || cur.sandbox) return;
+    const total = (cur.hints || []).length;
+    const used = Math.min(hintShown[cur.id] || 0, total);
+    $("hintBtn").textContent = "💡 Podpowiedź (" + used + "/" + total + ")";
+  }
   $("hintBtn").addEventListener("click", () => {
-    if (!cur || !cur.hint) return;
+    if (!cur || !cur.hints || !cur.hints.length) return;
+    const lvl = Math.min((hintShown[cur.id] || 0) + 1, cur.hints.length);
+    hintShown[cur.id] = lvl;
     const v = $("verdict");
     v.className = "verdict hint show";
-    v.innerHTML = `<b>💡 Podpowiedź</b>${cur.hint}`;
+    v.innerHTML = `<b>💡 Podpowiedź ${lvl}/${cur.hints.length}</b>` + cur.hints[lvl - 1] +
+      (lvl < cur.hints.length ? `<span class="hint-more">Nadal trudno? Kliknij 💡 jeszcze raz — dostaniesz konkret.</span>` : "");
+    updateHintBtn();
   });
   $("solBtn").addEventListener("click", () => {
     if (!cur || !cur.solution) return;

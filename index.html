@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffd43b">
+<meta name="description" content="Misja: Python — interaktywny kurs programowania dla dzieci. Pisz prawdziwy kod w przeglądarce.">
+<title>Misja: Python</title>
+
+<style>
+  :root {
+    --ground: #f2f5f9;
+    --ground-2: #e7ecf3;
+    --surface: #ffffff;
+    --surface-2: #f8fafc;
+    --ink: #17222e;
+    --ink-soft: #51616f;
+    --ink-faint: #7f8f9d;
+    --line: #dbe3ec;
+    --accent: #ffd43b;          /* python yellow */
+    --accent-ink: #21260a;
+    --blue: #3776ab;            /* python blue */
+    --blue-soft: #e3eef8;
+    --success: #189d6b;
+    --success-soft: #ddf5ea;
+    --danger: #e0435c;
+    --danger-soft: #fde5ea;
+    --editor-bg: #11161d;       /* edytor i konsola zawsze ciemne, jak u programistów */
+    --editor-ink: #e6edf3;
+    --console-bg: #0b0f14;
+    --shadow: 0 18px 44px -22px rgba(23, 43, 66, .35);
+    --shadow-sm: 0 2px 0 0 rgba(23, 43, 66, .08);
+    --font-display: ui-rounded, "SF Pro Rounded", "Nunito", "Segoe UI", system-ui, sans-serif;
+    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-code: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --r: 14px;
+    --r-lg: 20px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0f141b; --ground-2: #151c25; --surface: #1a222c; --surface-2: #161e27;
+      --ink: #e6edf3; --ink-soft: #a8b7c4; --ink-faint: #74838f; --line: #2a3542;
+      --accent: #ffd43b; --accent-ink: #21260a;
+      --blue: #5ba3d9; --blue-soft: #1d2d3d;
+      --success: #35c98e; --success-soft: #123527;
+      --danger: #ff6d84; --danger-soft: #3a1d26;
+      --shadow: 0 18px 44px -20px rgba(0,0,0,.6); --shadow-sm: 0 2px 0 0 rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #f2f5f9; --ground-2: #e7ecf3; --surface: #fff; --surface-2: #f8fafc;
+    --ink: #17222e; --ink-soft: #51616f; --ink-faint: #7f8f9d; --line: #dbe3ec;
+    --accent: #ffd43b; --accent-ink: #21260a;
+    --blue: #3776ab; --blue-soft: #e3eef8;
+    --success: #189d6b; --success-soft: #ddf5ea;
+    --danger: #e0435c; --danger-soft: #fde5ea;
+    --shadow: 0 18px 44px -22px rgba(23,43,66,.35); --shadow-sm: 0 2px 0 0 rgba(23,43,66,.08);
+  }
+  :root[data-theme="dark"] {
+    --ground: #0f141b; --ground-2: #151c25; --surface: #1a222c; --surface-2: #161e27;
+    --ink: #e6edf3; --ink-soft: #a8b7c4; --ink-faint: #74838f; --line: #2a3542;
+    --accent: #ffd43b; --accent-ink: #21260a;
+    --blue: #5ba3d9; --blue-soft: #1d2d3d;
+    --success: #35c98e; --success-soft: #123527;
+    --danger: #ff6d84; --danger-soft: #3a1d26;
+    --shadow: 0 18px 44px -20px rgba(0,0,0,.6); --shadow-sm: 0 2px 0 0 rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: var(--font-body); color: var(--ink);
+    background:
+      radial-gradient(900px 500px at 100% -10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 55%),
+      radial-gradient(800px 500px at -10% 0%, color-mix(in srgb, var(--blue) 12%, transparent), transparent 55%),
+      var(--ground);
+    min-height: 100vh; -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- topbar ---------- */
+  .top {
+    position: sticky; top: 0; z-index: 30;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 12px clamp(14px, 2.5vw, 26px);
+    background: color-mix(in srgb, var(--ground) 82%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+  .mark {
+    width: 42px; height: 42px; flex: none; border-radius: 12px;
+    display: grid; place-items: center; font-size: 22px;
+    background: var(--accent); box-shadow: var(--shadow-sm); transform: rotate(-4deg);
+  }
+  .brand h1 { font-family: var(--font-display); font-size: 19px; margin: 0; letter-spacing: -.01em; line-height: 1.1; }
+  .brand p { margin: 2px 0 0; font-size: 11.5px; color: var(--ink-soft); }
+  .top-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+  .profiles { display: flex; gap: 6px; }
+  .profile-tile {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 6px 12px 6px 7px; border-radius: 11px;
+    border: 1.5px solid var(--line); background: var(--surface);
+    color: var(--ink); font-family: var(--font-display); font-size: 13.5px; cursor: pointer;
+    transition: transform .1s ease, border-color .12s ease, background .12s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .profile-tile .pav {
+    width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center; font-size: 14px;
+    background: color-mix(in srgb, var(--pc, var(--blue)) 20%, var(--surface));
+  }
+  .profile-tile:hover { transform: translateY(-1px); border-color: var(--pc, var(--blue)); }
+  .profile-tile.active { border-color: var(--pc, var(--blue)); background: color-mix(in srgb, var(--pc, var(--blue)) 12%, var(--surface)); box-shadow: inset 0 0 0 1px var(--pc, var(--blue)); }
+
+  .xp-pill {
+    display: flex; align-items: center; gap: 9px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 11px;
+    padding: 7px 12px; font-size: 12.5px; color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .xp-pill b { color: var(--ink); font-family: var(--font-display); font-size: 15px; }
+  .xp-pill .bar { width: 84px; height: 8px; border-radius: 99px; background: var(--ground-2); overflow: hidden; }
+  .xp-pill .bar > span { display: block; height: 100%; width: 0%; border-radius: 99px; background: linear-gradient(90deg, var(--blue), var(--accent)); transition: width .5s cubic-bezier(.2,.8,.2,1); }
+
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 11px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink); font-size: 16px; cursor: pointer;
+    display: grid; place-items: center; transition: transform .12s ease, border-color .12s ease;
+  }
+  .icon-btn:hover { transform: translateY(-1px); border-color: var(--blue); }
+
+  /* ---------- layout ---------- */
+  .layout {
+    display: grid; grid-template-columns: 300px 1fr; gap: 20px;
+    max-width: 1200px; margin: 0 auto; padding: 20px clamp(14px, 2.5vw, 26px) 48px;
+    align-items: start;
+  }
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; }
+    .side { position: static !important; max-height: 300px; }
+  }
+
+  /* ---------- sidebar ---------- */
+  .side {
+    position: sticky; top: 78px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+    box-shadow: var(--shadow-sm); padding: 14px; overflow-y: auto; max-height: calc(100vh - 100px);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .chap-head {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-display); font-size: 13.5px; color: var(--ink);
+    padding: 4px 6px 2px; margin-top: 4px;
+  }
+  .chap-head .cnt { font-family: var(--font-body); font-size: 11.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .mi {
+    display: flex; align-items: center; gap: 9px; width: 100%; text-align: left;
+    padding: 8px 10px; border-radius: 10px; border: none; background: none;
+    color: var(--ink-soft); font: inherit; font-size: 13.5px; cursor: pointer;
+    transition: background .12s ease;
+  }
+  .mi:hover:not(.locked) { background: var(--ground-2); }
+  .mi .st { flex: none; width: 20px; text-align: center; font-size: 13px; }
+  .mi.done { color: var(--ink); }
+  .mi.cur { background: var(--blue-soft); color: var(--ink); font-weight: 600; }
+  .mi.locked { opacity: .45; cursor: default; }
+  .mi.sandbox { border-top: 1px dashed var(--line); border-radius: 0 0 10px 10px; margin-top: 6px; padding-top: 12px; }
+
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 99px;
+    font-size: 11.5px; font-weight: 700; border: 1px solid var(--line); background: var(--surface);
+    color: var(--ink-faint); opacity: .5;
+  }
+  .badge .bi { font-size: 13px; filter: grayscale(1); }
+  .badge.earned { opacity: 1; color: var(--ink); border-color: color-mix(in srgb, var(--accent) 70%, var(--line)); background: color-mix(in srgb, var(--accent) 14%, var(--surface)); }
+  .badge.earned .bi { filter: none; }
+
+  /* ---------- lesson ---------- */
+  .lesson {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+    box-shadow: var(--shadow); padding: clamp(18px, 3vw, 28px);
+    display: flex; flex-direction: column; gap: 16px; min-width: 0;
+  }
+  .chip {
+    align-self: flex-start; font-size: 11.5px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--blue); background: var(--blue-soft);
+    border-radius: 99px; padding: 5px 12px;
+  }
+  .lesson h2 { font-family: var(--font-display); font-size: clamp(22px, 3.6vw, 30px); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+
+  .theory { font-size: 14.5px; line-height: 1.65; color: var(--ink-soft); }
+  .theory p { margin: 0 0 8px; }
+  .theory code, .task code {
+    font-family: var(--font-code); font-size: .92em;
+    background: var(--ground-2); color: var(--ink);
+    padding: 1.5px 6px; border-radius: 6px; white-space: nowrap;
+  }
+  .theory pre {
+    font-family: var(--font-code); font-size: 13px; line-height: 1.55;
+    background: var(--editor-bg); color: var(--editor-ink);
+    padding: 12px 14px; border-radius: 10px; overflow-x: auto; margin: 8px 0;
+  }
+  .task {
+    border: 1.5px solid color-mix(in srgb, var(--accent) 65%, var(--line));
+    background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+    border-radius: var(--r); padding: 13px 16px; font-size: 14.5px; line-height: 1.6;
+  }
+  .task .task-label { font-weight: 800; font-family: var(--font-display); font-size: 13px; display: block; margin-bottom: 3px; }
+
+  .editor-wrap { display: flex; flex-direction: column; gap: 0; }
+  .editor-head {
+    display: flex; align-items: center; justify-content: space-between;
+    background: color-mix(in srgb, var(--editor-bg) 88%, #fff 12%);
+    color: #aab8c5; font-size: 12px; font-weight: 700;
+    padding: 8px 13px; border-radius: 10px 10px 0 0;
+  }
+  .editor-head button {
+    background: none; border: none; color: #8fa0b0; font: inherit; font-size: 12px;
+    cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 2px 4px;
+  }
+  .editor-head button:hover { color: #e6edf3; }
+  #editor {
+    width: 100%; min-height: 180px; resize: vertical;
+    font-family: var(--font-code); font-size: 14.5px; line-height: 1.6;
+    background: var(--editor-bg); color: var(--editor-ink);
+    caret-color: var(--accent);
+    border: none; border-radius: 0 0 10px 10px; padding: 14px 16px;
+    outline: none; tab-size: 4;
+  }
+  #editor:focus { box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 60%, transparent); }
+
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--font-display); font-size: 15px; padding: 11px 18px;
+    border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface-2);
+    color: var(--ink); cursor: pointer;
+    transition: transform .1s ease, box-shadow .1s ease, border-color .12s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(1px); }
+  .btn:disabled { opacity: .55; cursor: default; transform: none; }
+  .btn-run { background: var(--accent); color: var(--accent-ink); border-color: transparent; box-shadow: 0 4px 0 -1px color-mix(in srgb, var(--accent) 50%, #000 25%); }
+  .btn-check { background: var(--success); color: #fff; border-color: transparent; box-shadow: 0 4px 0 -1px color-mix(in srgb, var(--success) 55%, #000 25%); }
+
+  .verdict { display: none; border-radius: var(--r); padding: 14px 16px; font-size: 14px; line-height: 1.55; }
+  .verdict.show { display: block; }
+  .verdict.ok { background: var(--success-soft); color: var(--success); }
+  .verdict.no { background: var(--danger-soft); color: var(--danger); }
+  .verdict.hint { background: var(--blue-soft); color: var(--ink); }
+  .verdict b { font-family: var(--font-display); font-size: 16px; display: block; margin-bottom: 3px; }
+  .verdict pre {
+    font-family: var(--font-code); font-size: 12.5px; margin: 8px 0 0;
+    background: color-mix(in srgb, var(--console-bg) 92%, transparent); color: #d7e2ec;
+    padding: 10px 12px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap;
+  }
+  .verdict .orig-err { display: block; margin-top: 7px; font-size: 11.5px; opacity: .65; font-family: var(--font-code); }
+
+  .io { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .io.with-turtle { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 720px) { .io.with-turtle { grid-template-columns: 1fr; } }
+  .io-head { font-size: 12px; font-weight: 800; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+  #console {
+    font-family: var(--font-code); font-size: 13.5px; line-height: 1.55;
+    background: var(--console-bg); color: #d7e2ec;
+    min-height: 110px; max-height: 260px; overflow: auto;
+    margin: 0; padding: 12px 14px; border-radius: 10px; white-space: pre-wrap; word-break: break-word;
+  }
+  #console .err { color: #ff8fa3; }
+  #console .sys { color: #5c6f80; }
+  #turtleCanvas {
+    background: #fff; border-radius: 10px; min-height: 260px;
+    display: grid; place-items: center; overflow: hidden; border: 1px solid var(--line);
+  }
+  #turtleCanvas > div { position: relative !important; }
+
+  .next {
+    align-self: flex-end;
+    font-family: var(--font-display); font-size: 16px; padding: 12px 22px;
+    border-radius: 12px; border: none; background: var(--blue); color: #fff; cursor: pointer;
+    box-shadow: 0 4px 0 -1px color-mix(in srgb, var(--blue) 55%, #000 25%);
+    transition: transform .1s ease;
+  }
+  .next:hover { transform: translateY(-1px); }
+
+  /* ---------- toast & confetti ---------- */
+  #toastLayer { position: fixed; top: 16px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; z-index: 60; }
+  .toast {
+    background: var(--ink); color: var(--ground);
+    font-family: var(--font-display); font-size: 14.5px; padding: 11px 19px; border-radius: 99px;
+    box-shadow: var(--shadow); display: flex; align-items: center; gap: 9px;
+    animation: toastIn .3s ease both;
+  }
+  .toast .te { font-size: 18px; }
+  .toast.out { animation: toastOut .3s ease both; }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(-14px) scale(.92); } }
+  @keyframes toastOut { to { opacity: 0; transform: translateY(-8px); } }
+  .confetti { position: fixed; top: -12px; width: 9px; height: 13px; z-index: 70; pointer-events: none; border-radius: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+    .confetti { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="toastLayer" aria-live="polite"></div>
+
+<header class="top">
+  <div class="brand">
+    <div class="mark" aria-hidden="true">🐍</div>
+    <div>
+      <h1>Misja: Python</h1>
+      <p>Pisz prawdziwy kod · misje, punkty, żółw 🐢</p>
+    </div>
+  </div>
+  <div class="top-controls">
+    <div class="profiles" id="profiles"></div>
+    <div class="xp-pill" title="Punkty doświadczenia">
+      <span>Poziom <b id="levelVal">1</b></span>
+      <div class="bar"><span id="xpBar"></span></div>
+      <span id="xpTxt">0 XP</span>
+    </div>
+    <button class="icon-btn" id="themeBtn" title="Motyw" aria-label="Zmień motyw">🌙</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="side">
+    <nav id="missionList" aria-label="Lista misji"></nav>
+    <div class="badges" id="badges"></div>
+  </aside>
+
+  <main class="lesson">
+    <div class="chip" id="chapChip">Rozdział</div>
+    <h2 id="mTitle">Ładowanie…</h2>
+    <div class="theory" id="mTheory"></div>
+    <div class="task" id="mTask"></div>
+
+    <div class="editor-wrap">
+      <div class="editor-head">
+        <span>📝 Twój kod (Ctrl+Enter = Sprawdź)</span>
+        <button id="resetCode" type="button">↺ zacznij od nowa</button>
+      </div>
+      <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+    </div>
+
+    <div class="btns">
+      <button class="btn btn-run" id="runBtn" type="button">▶ Uruchom</button>
+      <button class="btn btn-check" id="checkBtn" type="button">✔ Sprawdź zadanie</button>
+      <button class="btn" id="hintBtn" type="button">💡 Podpowiedź</button>
+      <button class="btn" id="solBtn" type="button" hidden>🔓 Pokaż rozwiązanie</button>
+    </div>
+
+    <div class="verdict" id="verdict"></div>
+
+    <div class="io" id="ioGrid">
+      <div class="console-wrap">
+        <div class="io-head">🖥️ Konsola</div>
+        <pre id="console"><span class="sys">Tu pojawi się wynik Twojego programu…</span></pre>
+      </div>
+      <div class="turtle-wrap" id="turtleWrap" hidden>
+        <div class="io-head">🎨 Rysunek żółwia</div>
+        <div id="turtleCanvas"></div>
+      </div>
+    </div>
+
+    <button class="next" id="nextBtn" type="button" hidden>Następna misja →</button>
+  </main>
+</div>
+
+<script src="skulpt.min.js"></script>
+<script src="skulpt-stdlib.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // ==== PURE-START (dane kursu i logika sprawdzania — testowane automatycznie w node) ====
+
+  const REPORT = {
+    enabled: true,
+    url: "https://docs.google.com/forms/d/e/1FAIpQLSff2Vazo6lmshvnDu8hM2ynPR15CCsWSXqdjkq4BAFRoVfnCg/formResponse",
+    f: {
+      name: "entry.494276556",
+      dzial: "entry.319717124",
+      zadania: "entry.1241410035",
+      poprawne: "entry.514978592",
+      celnosc: "entry.24679080",
+      poziom: "entry.1759595029",
+      status: "entry.1395870384"
+    }
+  };
+
+  const XP_PER_MISSION = 10;
+  const XP_PER_LEVEL = 40;
+
+  const CHAPTERS = [
+    { key: "r1", name: "Pierwsze kroki", icon: "🚀", missions: [
+      {
+        id: "r1m1", title: "Pierwszy program",
+        theory: `<p>Program w Pythonie to lista poleceń, które komputer wykonuje po kolei — od góry do dołu. Najważniejsze polecenie na start to <code>print(...)</code> — wypisuje na ekranie to, co włożysz w nawiasy. Tekst musi być w cudzysłowach:</p><pre>print("Ahoj!")</pre>`,
+        task: `Napisz program, który wypisze dokładnie: <code>Cześć, świecie!</code>`,
+        starter: "# To jest komentarz - komputer go pomija\n# Napisz swoj kod ponizej:\n\n",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /print/, msg: "Użyj polecenia print(...)" },
+          { type: "output", equals: "Cześć, świecie!" }
+        ],
+        hint: `Wpisz: <code>print("Cześć, świecie!")</code> — zwróć uwagę na przecinek i wykrzyknik.`,
+        solution: `print("Cześć, świecie!")`
+      },
+      {
+        id: "r1m2", title: "Trzy linijki",
+        theory: `<p>Każde <code>print</code> wypisuje osobną linię. Trzy printy = trzy linie:</p><pre>print("raz")\nprint("dwa")</pre>`,
+        task: `Wypisz trzy linie — w pierwszej <code>Ala</code>, w drugiej <code>ma</code>, w trzeciej <code>pytona</code>.`,
+        starter: "",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "lines", equals: ["Ala", "ma", "pytona"] }
+        ],
+        hint: `Użyj trzech printów, każdy w osobnej linii: <code>print("Ala")</code>, potem <code>print("ma")</code>…`,
+        solution: `print("Ala")\nprint("ma")\nprint("pytona")`
+      },
+      {
+        id: "r1m3", title: "Print z przecinkami",
+        theory: `<p>W jednym <code>print</code> można wypisać kilka rzeczy — oddziel je przecinkami, a Python sam wstawi spacje. Można mieszać tekst i liczby (liczby BEZ cudzysłowów):</p><pre>print("Lubię", "gry")\nprint("Kot ma", 4, "łapy")</pre>`,
+        task: `Użyj <b>jednego</b> printa z przecinkami, żeby wypisać: <code>Mam 12 lat</code> — liczba 12 ma być osobnym elementem (bez cudzysłowów).`,
+        starter: "",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /print\s*\([^)]*,[^)]*,/, msg: "Użyj JEDNEGO printa z co najmniej dwoma przecinkami." },
+          { type: "code", re: /,\s*12\s*,/, msg: "Liczba 12 ma być osobnym elementem między przecinkami (bez cudzysłowów)." },
+          { type: "output", equals: "Mam 12 lat" }
+        ],
+        hint: `<code>print("Mam", 12, "lat")</code> — przecinki dodają spacje automatycznie.`,
+        solution: `print("Mam", 12, "lat")`
+      },
+      {
+        id: "r1m4", title: "Napraw zepsuty program",
+        theory: `<p>Programiści czytają błędy, zamiast się ich bać! Gdy Python czegoś nie rozumie, pokazuje <b>SyntaxError</b> (błąd składni). Najczęstszy powód: niedomknięty cudzysłów albo nawias. Każdy otwarty <code>"</code> musi mieć swoją parę.</p>`,
+        task: `Ten program jest zepsuty — uruchom go, przeczytaj błąd i <b>napraw</b>, żeby wypisał: <code>To działa!</code>`,
+        starter: `print("To działa!)`,
+        stdin: null, turtle: false,
+        checks: [
+          { type: "output", equals: "To działa!" }
+        ],
+        hint: `Spójrz na koniec linii: tekst zaczyna się cudzysłowem, ale czy się nim kończy? Dopisz <code>"</code> przed nawiasem.`,
+        solution: `print("To działa!")`
+      }
+    ] },
+    { key: "r2", name: "Zmienne", icon: "📦", missions: [
+      {
+        id: "r2m1", title: "Pudełko z nazwą",
+        theory: `<p>Zmienna to pudełko z etykietą, w którym program coś trzyma. Tworzysz ją znakiem <code>=</code>, a potem używasz nazwy bez cudzysłowów:</p><pre>zwierzak = "kot"\nprint("Mój zwierzak to", zwierzak)</pre><p>W nazwach zmiennych nie używamy polskich znaków ani spacji.</p>`,
+        task: `Stwórz zmienną <code>bohater</code> z wartością <code>"Pyton"</code> i wypisz: <code>Mój bohater to Pyton</code> — używając tej zmiennej w print.`,
+        starter: "",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /bohater\s*=/, msg: "Stwórz zmienną o nazwie bohater (bohater = ...)." },
+          { type: "code", re: /print\s*\([^)]*bohater/, msg: "W print użyj zmiennej bohater — bez cudzysłowów wokół niej." },
+          { type: "output", equals: "Mój bohater to Pyton" }
+        ],
+        hint: `Pierwsza linia: <code>bohater = "Pyton"</code>. Druga: <code>print("Mój bohater to", bohater)</code>.`,
+        solution: `bohater = "Pyton"\nprint("Mój bohater to", bohater)`
+      },
+      {
+        id: "r2m2", title: "Kalkulator",
+        theory: `<p>Zmienne mogą trzymać liczby — wtedy bez cudzysłowów! Python zna działania: <code>+</code> <code>-</code> <code>*</code> (mnożenie) <code>/</code> (dzielenie):</p><pre>a = 2\nb = 3\nprint(a + b)</pre>`,
+        task: `Stwórz zmienne <code>a = 7</code> i <code>b = 5</code>, a potem wypisz ich <b>sumę</b> (samą liczbę).`,
+        starter: "",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /a\s*=\s*7/, msg: "Stwórz zmienną a = 7." },
+          { type: "code", re: /b\s*=\s*5/, msg: "Stwórz zmienną b = 5." },
+          { type: "code", re: /a\s*\+\s*b/, msg: "Dodaj zmienne do siebie: a + b." },
+          { type: "output", equals: "12" }
+        ],
+        hint: `Trzy linie: <code>a = 7</code>, <code>b = 5</code>, <code>print(a + b)</code>.`,
+        solution: `a = 7\nb = 5\nprint(a + b)`
+      },
+      {
+        id: "r2m3", title: "Niech Python liczy",
+        theory: `<p>Działania możesz wstawiać prosto do printa — Python najpierw policzy, potem wypisze:</p><pre>print("2 plus 2 to", 2 + 2)</pre>`,
+        task: `Wypisz dokładnie: <code>7 razy 5 to 35</code> — ale liczbę 35 ma policzyć Python z działania <code>7 * 5</code>. Nie wpisuj 35 samodzielnie!`,
+        starter: "",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /7\s*\*\s*5|5\s*\*\s*7/, msg: "Użyj mnożenia: 7 * 5." },
+          { type: "codeNot", re: /35/, msg: "Nie wpisuj 35 — niech Python sam to policzy!" },
+          { type: "output", equals: "7 razy 5 to 35" }
+        ],
+        hint: `<code>print("7 razy 5 to", 7 * 5)</code>`,
+        solution: `print("7 razy 5 to", 7 * 5)`
+      },
+      {
+        id: "r2m4", title: "Porozmawiaj z programem",
+        theory: `<p><code>input("pytanie")</code> zatrzymuje program i czeka, aż użytkownik coś wpisze. To, co wpisze, możesz schować do zmiennej:</p><pre>kolor = input("Ulubiony kolor? ")\nprint("Też lubię", kolor)</pre><p>Przy sprawdzaniu zadania komputer sam „wpisze” odpowiedź za użytkownika.</p>`,
+        task: `Zapytaj o imię i wypisz: <code>Miło Cię poznać, [imię]</code>. Sprawdzarka wpisze imię <b>Antek</b> — wynik ma zawierać <code>Miło Cię poznać, Antek</code>.`,
+        starter: "",
+        stdin: ["Antek"], turtle: false,
+        checks: [
+          { type: "code", re: /input\s*\(/, msg: "Użyj input(...) do zapytania o imię." },
+          { type: "outputContains", text: "Miło Cię poznać, Antek" }
+        ],
+        hint: `<code>imie = input("Jak masz na imię? ")</code>, potem <code>print("Miło Cię poznać,", imie)</code>.`,
+        solution: `imie = input("Jak masz na imię? ")\nprint("Miło Cię poznać,", imie)`
+      },
+      {
+        id: "r2m5", title: "Dodawajka",
+        theory: `<p>Uwaga, pułapka! <code>input</code> zawsze zwraca <b>tekst</b>. Tekst <code>"3" + "4"</code> to… <code>"34"</code> (sklejenie!). Żeby dostać liczbę, użyj <code>int(...)</code>:</p><pre>liczba = int(input("Podaj liczbę: "))</pre>`,
+        task: `Pobierz od użytkownika dwie liczby i wypisz ich sumę. Sprawdzarka wpisze <b>3</b> i <b>4</b> — w wyniku ma pojawić się <code>7</code>.`,
+        starter: "",
+        stdin: ["3", "4"], turtle: false,
+        checks: [
+          { type: "code", re: /int\s*\(/, msg: "Zamień tekst na liczbę funkcją int(...)." },
+          { type: "outputContains", text: "7" }
+        ],
+        hint: `<code>a = int(input("Pierwsza: "))</code>, <code>b = int(input("Druga: "))</code>, <code>print("Suma to", a + b)</code>.`,
+        solution: `a = int(input("Pierwsza liczba: "))\nb = int(input("Druga liczba: "))\nprint("Suma to", a + b)`
+      }
+    ] },
+    { key: "r3", name: "Decyzje (if)", icon: "🚦", missions: [
+      {
+        id: "r3m1", title: "Bramka wieku",
+        theory: `<p><code>if</code> pozwala programowi podejmować decyzje: „JEŚLI warunek jest prawdziwy, zrób to”. Po warunku stawiamy dwukropek, a linie do wykonania <b>wcinamy o 4 spacje</b>:</p><pre>temperatura = 30\nif temperatura &gt; 25:\n    print("Ale upał!")</pre><p>Porównania: <code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code> <code>==</code> (równe) <code>!=</code> (różne).</p>`,
+        task: `Stwórz zmienną <code>wiek = 13</code>. Jeśli wiek jest większy lub równy 12, wypisz: <code>Możesz obejrzeć ten film</code>.`,
+        starter: "wiek = 13\n",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /if\s/, msg: "Użyj instrukcji if." },
+          { type: "code", re: />=/, msg: "Użyj porównania >= (większe lub równe)." },
+          { type: "output", equals: "Możesz obejrzeć ten film" }
+        ],
+        hint: `<code>if wiek >= 12:</code> a w następnej linii, wcięte 4 spacjami: <code>print("Możesz obejrzeć ten film")</code>.`,
+        solution: `wiek = 13\nif wiek >= 12:\n    print("Możesz obejrzeć ten film")`
+      },
+      {
+        id: "r3m2", title: "Parzysta czy nie?",
+        theory: `<p>Operator <code>%</code> daje <b>resztę z dzielenia</b>: <code>10 % 3</code> to 1. Jeśli reszta z dzielenia przez 2 wynosi 0 — liczba jest parzysta! A <code>else:</code> znaczy „w przeciwnym razie”:</p><pre>if warunek:\n    ...\nelse:\n    ...</pre>`,
+        task: `Zmienna <code>liczba = 10</code>. Wypisz <code>Parzysta</code>, jeśli liczba jest parzysta, w przeciwnym razie <code>Nieparzysta</code>.`,
+        starter: "liczba = 10\n",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /%/, msg: "Użyj operatora % (reszta z dzielenia)." },
+          { type: "code", re: /else/, msg: "Dodaj gałąź else." },
+          { type: "output", equals: "Parzysta" }
+        ],
+        hint: `<code>if liczba % 2 == 0:</code> → print("Parzysta"), <code>else:</code> → print("Nieparzysta").`,
+        solution: `liczba = 10\nif liczba % 2 == 0:\n    print("Parzysta")\nelse:\n    print("Nieparzysta")`
+      },
+      {
+        id: "r3m3", title: "Jaka ocena?",
+        theory: `<p><code>elif</code> („a jeśli nie, to sprawdź…”) pozwala ułożyć łańcuszek warunków. Python sprawdza od góry i wykonuje pierwszy pasujący:</p><pre>if punkty &gt;= 90:\n    ...\nelif punkty &gt;= 70:\n    ...\nelse:\n    ...</pre>`,
+        task: `Zmienna <code>punkty = 85</code>. Wypisz: <code>Celująco!</code> przy 90+, <code>Bardzo dobrze!</code> przy 70+, w przeciwnym razie <code>Ćwicz dalej!</code>. (Dla 85 wyjdzie: Bardzo dobrze!)`,
+        starter: "punkty = 85\n",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /elif/, msg: "Użyj elif do środkowego warunku." },
+          { type: "output", equals: "Bardzo dobrze!" }
+        ],
+        hint: `Trzy gałęzie: <code>if punkty >= 90:</code>, <code>elif punkty >= 70:</code>, <code>else:</code> — każda ze swoim printem (wciętym!).`,
+        solution: `punkty = 85\nif punkty >= 90:\n    print("Celująco!")\nelif punkty >= 70:\n    print("Bardzo dobrze!")\nelse:\n    print("Ćwicz dalej!")`
+      },
+      {
+        id: "r3m4", title: "Napraw wcięcia",
+        theory: `<p>Wcięcia to w Pythonie nie ozdoba — to <b>część języka</b>! Linie po dwukropku muszą być przesunięte o 4 spacje, inaczej zobaczysz <b>IndentationError</b>.</p>`,
+        task: `Ten program się wysypuje. Uruchom, przeczytaj błąd i napraw wcięcie, żeby wypisał: <code>Tajne drzwi otwarte!</code>`,
+        starter: `haslo = "smok"\nif haslo == "smok":\nprint("Tajne drzwi otwarte!")`,
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /if/, msg: "Zostaw instrukcję if w programie." },
+          { type: "output", equals: "Tajne drzwi otwarte!" }
+        ],
+        hint: `Linia z print musi być wcięta — dodaj przed nią 4 spacje.`,
+        solution: `haslo = "smok"\nif haslo == "smok":\n    print("Tajne drzwi otwarte!")`
+      }
+    ] },
+    { key: "r4", name: "Pętle", icon: "🔁", missions: [
+      {
+        id: "r4m1", title: "Echo",
+        theory: `<p>Pętla <code>for</code> powtarza wcięte linie określoną liczbę razy:</p><pre>for i in range(3):\n    print("Hura!")</pre><p>To wypisze „Hura!” trzy razy. Zamiast pisać to samo wiele razy — każ komputerowi powtarzać!</p>`,
+        task: `Wypisz <code>Hop!</code> pięć razy — pętlą, z <b>jednym</b> printem w środku.`,
+        starter: "",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /for\s/, msg: "Użyj pętli for." },
+          { type: "code", re: /range/, msg: "Użyj range(...) do określenia liczby powtórzeń." },
+          { type: "codeNot", re: /print[\s\S]*print/, msg: "Wystarczy JEDEN print — pętla zrobi resztę." },
+          { type: "lines", equals: ["Hop!", "Hop!", "Hop!", "Hop!", "Hop!"] }
+        ],
+        hint: `<code>for i in range(5):</code> a pod spodem (wcięte): <code>print("Hop!")</code>.`,
+        solution: `for i in range(5):\n    print("Hop!")`
+      },
+      {
+        id: "r4m2", title: "Licz do dziesięciu",
+        theory: `<p>Zmienna pętli (np. <code>i</code>) przyjmuje kolejne wartości. <code>range(1, 11)</code> daje liczby od 1 do 10 — <b>koniec nie wchodzi</b> do zakresu!</p><pre>for i in range(1, 4):\n    print(i)   # wypisze 1, 2, 3</pre>`,
+        task: `Wypisz liczby od 1 do 10, każdą w osobnej linii.`,
+        starter: "",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /for\s/, msg: "Użyj pętli for." },
+          { type: "lines", equals: ["1","2","3","4","5","6","7","8","9","10"] }
+        ],
+        hint: `<code>for i in range(1, 11):</code> i wcięte <code>print(i)</code>. Pamiętaj: 11, nie 10!`,
+        solution: `for i in range(1, 11):\n    print(i)`
+      },
+      {
+        id: "r4m3", title: "Odliczanie rakiety",
+        theory: `<p><code>range</code> może mieć trzeci składnik — <b>krok</b>. Krok <code>-1</code> liczy w dół:</p><pre>range(3, 0, -1)   # daje 3, 2, 1</pre>`,
+        task: `Odlicz jak przed startem rakiety: wypisz <code>5 4 3 2 1</code> (każda liczba w osobnej linii), a na końcu <code>Start!</code>`,
+        starter: "",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /range/, msg: "Użyj range z krokiem -1." },
+          { type: "lines", equals: ["5","4","3","2","1","Start!"] }
+        ],
+        hint: `<code>for i in range(5, 0, -1):</code> → print(i), a PO pętli (bez wcięcia): <code>print("Start!")</code>.`,
+        solution: `for i in range(5, 0, -1):\n    print(i)\nprint("Start!")`
+      },
+      {
+        id: "r4m4", title: "Sztuczka Gaussa",
+        theory: `<p>Mała legenda: nauczyciel kazał uczniom zsumować liczby od 1 do 100, licząc na godzinę spokoju. Mały Carl Gauss podał wynik po chwili! Ty masz jeszcze lepszy trik — Pythona. Użyj zmiennej-skarbonki:</p><pre>suma = 0\nfor i in range(1, 4):\n    suma = suma + i\nprint(suma)</pre>`,
+        task: `Policz sumę liczb od 1 do 100 i wypisz sam wynik. (Nie wpisuj wyniku ręcznie!)`,
+        starter: "",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /for\s|while\s/, msg: "Użyj pętli." },
+          { type: "codeNot", re: /5050/, msg: "Nie wpisuj wyniku — niech Python go policzy!" },
+          { type: "output", equals: "5050" }
+        ],
+        hint: `Skarbonka: <code>suma = 0</code>, pętla <code>for i in range(1, 101):</code>, w środku <code>suma = suma + i</code>, po pętli <code>print(suma)</code>.`,
+        solution: `suma = 0\nfor i in range(1, 101):\n    suma = suma + i\nprint(suma)`
+      },
+      {
+        id: "r4m5", title: "Tabliczka siódemki",
+        theory: `<p>Połącz wszystko, co umiesz: pętlę, mnożenie i print z przecinkami. Tak wygląda jedna linijka tabliczki:</p><pre>print(7, "x", 2, "=", 14)</pre>`,
+        task: `Wypisz tabliczkę mnożenia dla 7 — dziesięć linii, od <code>7 x 1 = 7</code> do <code>7 x 10 = 70</code>. Wynik ma liczyć Python (<code>7 * i</code>).`,
+        starter: "",
+        stdin: null, turtle: false,
+        checks: [
+          { type: "code", re: /for\s/, msg: "Użyj pętli for." },
+          { type: "code", re: /7\s*\*\s*i|i\s*\*\s*7/, msg: "Wynik ma liczyć Python: 7 * i." },
+          { type: "lines", equals: ["7 x 1 = 7","7 x 2 = 14","7 x 3 = 21","7 x 4 = 28","7 x 5 = 35","7 x 6 = 42","7 x 7 = 49","7 x 8 = 56","7 x 9 = 63","7 x 10 = 70"] }
+        ],
+        hint: `<code>for i in range(1, 11):</code> a w środku: <code>print(7, "x", i, "=", 7 * i)</code>.`,
+        solution: `for i in range(1, 11):\n    print(7, "x", i, "=", 7 * i)`
+      }
+    ] },
+    { key: "r5", name: "Żółw maluje", icon: "🐢", missions: [
+      {
+        id: "r5m1", title: "Pierwsza kreska",
+        theory: `<p>Czas na rysowanie! Moduł <code>turtle</code> daje Ci żółwia z pisakiem. Gdzie idzie żółw — tam zostaje kreska:</p><pre>import turtle\nzolw = turtle.Turtle()\nzolw.forward(100)   # idź 100 kroków przed siebie</pre><p>Rysunek pojawi się w okienku obok konsoli.</p>`,
+        task: `Stwórz żółwia i narysuj kreskę o długości 100.`,
+        starter: "import turtle\n\n",
+        stdin: null, turtle: true,
+        checks: [
+          { type: "code", re: /import\s+turtle/, msg: "Zacznij od: import turtle." },
+          { type: "code", re: /forward\s*\(/, msg: "Użyj forward(...), żeby żółw poszedł do przodu." }
+        ],
+        hint: `<code>zolw = turtle.Turtle()</code>, potem <code>zolw.forward(100)</code>.`,
+        solution: `import turtle\nzolw = turtle.Turtle()\nzolw.forward(100)`
+      },
+      {
+        id: "r5m2", title: "Kwadrat",
+        theory: `<p><code>zolw.right(90)</code> obraca żółwia w prawo o 90 stopni. Kwadrat to 4 razy: idź i skręć. Zamiast pisać to 4 razy — pętla!</p><pre>for i in range(4):\n    zolw.forward(100)\n    zolw.right(90)</pre>`,
+        task: `Narysuj kwadrat o boku 100 — pętlą for.`,
+        starter: "import turtle\nzolw = turtle.Turtle()\n\n",
+        stdin: null, turtle: true,
+        checks: [
+          { type: "code", re: /for\s/, msg: "Użyj pętli for — 4 powtórzenia." },
+          { type: "code", re: /forward\s*\(/, msg: "Użyj forward(...)." },
+          { type: "code", re: /right\s*\(\s*90|left\s*\(\s*90/, msg: "Skręcaj o 90 stopni: right(90) lub left(90)." }
+        ],
+        hint: `<code>for i in range(4):</code> a w środku dwie wcięte linie: forward(100) i right(90).`,
+        solution: `import turtle\nzolw = turtle.Turtle()\nfor i in range(4):\n    zolw.forward(100)\n    zolw.right(90)`
+      },
+      {
+        id: "r5m3", title: "Gwiazda",
+        theory: `<p>Magia kątów: skręcając o <b>144 stopnie</b> zamiast 90, żółw narysuje pięcioramienną gwiazdę! Wystarczy 5 powtórzeń.</p>`,
+        task: `Narysuj gwiazdę: 5 razy — idź 150 kroków, skręć w prawo o 144 stopnie.`,
+        starter: "import turtle\nzolw = turtle.Turtle()\n\n",
+        stdin: null, turtle: true,
+        checks: [
+          { type: "code", re: /for\s/, msg: "Użyj pętli for." },
+          { type: "code", re: /144/, msg: "Sekret gwiazdy to kąt 144 stopnie." },
+          { type: "code", re: /forward\s*\(/, msg: "Użyj forward(...)." }
+        ],
+        hint: `<code>for i in range(5):</code> → forward(150) i right(144).`,
+        solution: `import turtle\nzolw = turtle.Turtle()\nfor i in range(5):\n    zolw.forward(150)\n    zolw.right(144)`
+      },
+      {
+        id: "r5m4", title: "Kolorowa spirala",
+        theory: `<p>Ostatni trik: użyj zmiennej pętli <code>i</code> jako długości kroku — każdy obrót będzie dłuższy i powstanie spirala! Do tego kolor i turbo-prędkość:</p><pre>zolw.color("purple")\nzolw.speed(0)</pre><p>Kolory po angielsku: "red", "blue", "green", "orange", "purple"…</p>`,
+        task: `Narysuj kolorową spiralę: ustaw kolor, a w pętli <code>range(60)</code> rób <code>forward(i * 3)</code> i <code>right(90)</code>.`,
+        starter: "import turtle\nzolw = turtle.Turtle()\nzolw.speed(0)\n\n",
+        stdin: null, turtle: true,
+        checks: [
+          { type: "code", re: /color\s*\(/, msg: "Ustaw kolor żółwia: zolw.color(...)." },
+          { type: "code", re: /for\s/, msg: "Użyj pętli for." },
+          { type: "code", re: /forward\s*\(\s*i/, msg: "Długość kroku ma rosnąć: forward(i * 3)." }
+        ],
+        hint: `<code>zolw.color("purple")</code>, potem <code>for i in range(60):</code> → forward(i * 3), right(90).`,
+        solution: `import turtle\nzolw = turtle.Turtle()\nzolw.speed(0)\nzolw.color("purple")\nfor i in range(60):\n    zolw.forward(i * 3)\n    zolw.right(90)`
+      }
+    ] }
+  ];
+
+  const SANDBOX = {
+    id: "sandbox", title: "Piaskownica", sandbox: true, turtle: true, stdin: null,
+    theory: `<p>Twoje laboratorium! Tu nie ma zadania ani sprawdzania — pisz, co chcesz, i eksperymentuj. Działa wszystko, czego się nauczyłeś: print, zmienne, input, if, pętle i żółw.</p>`,
+    task: `Wolne kodowanie — spróbuj np. zmienić liczby i kolory w spirali, albo napisz własny pomysł.`,
+    starter: `import turtle\nzolw = turtle.Turtle()\nzolw.speed(0)\nzolw.color("orange")\nfor i in range(36):\n    zolw.forward(120)\n    zolw.right(170)\nprint("Gotowe! Zmień liczby i zobacz, co się stanie.")`,
+    checks: [], hint: "", solution: ""
+  };
+
+  function normOut(s) {
+    return String(s).replace(/\r/g, "").replace(/[ \t]+$/gm, "").replace(/\n+$/, "");
+  }
+
+  function translateErr(err) {
+    const e = String(err);
+    let m;
+    if ((m = e.match(/NameError: name '(.+?)' is not defined/))) {
+      return "Python nie zna nazwy „" + m[1] + "”. Literówka? A może zapomniałeś najpierw stworzyć tę zmienną?";
+    }
+    if (/IndentationError|bad indentation|expected an indented block|unindent/i.test(e)) {
+      return "Problem z wcięciami! Linie po dwukropku (:) muszą być przesunięte o 4 spacje.";
+    }
+    if (/SyntaxError/i.test(e)) {
+      return "Błąd składni — Python nie rozumie zapisu. Sprawdź nawiasy, cudzysłowy i dwukropki.";
+    }
+    if (/TypeError/i.test(e) && /str|int/i.test(e)) {
+      return "Mieszasz tekst z liczbą! Użyj int(...), żeby zamienić tekst na liczbę.";
+    }
+    if (/TypeError/i.test(e)) {
+      return "Coś tu jest niewłaściwego typu — sprawdź, czy nie łączysz tekstu z liczbą.";
+    }
+    if (/ZeroDivisionError/i.test(e)) {
+      return "Ups — dzielenie przez zero! Tego nie wolno nawet w matematyce.";
+    }
+    if (/ValueError/i.test(e)) {
+      return "Nie udało się zamienić tekstu na liczbę — int(...) działa tylko na zapisach liczb.";
+    }
+    if (/TimeLimitError|time limit|RangeError/i.test(e)) {
+      return "Program działa za długo — może pętla nie ma końca?";
+    }
+    return "Coś poszło nie tak — przeczytaj komunikat poniżej i poszukaj numeru linii.";
+  }
+
+  // zwraca {ok:true} albo {ok:false, msg, detail}
+  function evaluateChecks(lesson, code, output, error) {
+    if (error) {
+      return { ok: false, msg: translateErr(error), detail: String(error) };
+    }
+    for (const c of lesson.checks) {
+      if (c.type === "code" && !c.re.test(code)) {
+        return { ok: false, msg: c.msg };
+      }
+      if (c.type === "codeNot" && c.re.test(code)) {
+        return { ok: false, msg: c.msg };
+      }
+      if (c.type === "output" && normOut(output) !== normOut(c.equals)) {
+        return { ok: false, msg: "Prawie! Twój program wypisał co innego, niż trzeba.", expected: c.equals, got: normOut(output) };
+      }
+      if (c.type === "lines") {
+        const want = c.equals.join("\n");
+        if (normOut(output) !== want) {
+          return { ok: false, msg: "Prawie! Porównaj dokładnie linie wyniku.", expected: want, got: normOut(output) };
+        }
+      }
+      if (c.type === "outputContains" && !normOut(output).includes(c.text)) {
+        return { ok: false, msg: "W wyniku powinno pojawić się: " + c.text, got: normOut(output) };
+      }
+    }
+    return { ok: true };
+  }
+
+  // ==== PURE-END ====
+
+  const ALL_MISSIONS = [];
+  CHAPTERS.forEach((ch) => ch.missions.forEach((mi) => { mi.chapter = ch; ALL_MISSIONS.push(mi); }));
+
+  const $ = (id) => document.getElementById(id);
+  const escapeHtml = (t) => String(t).replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
+
+  // ---------- profile i zapis ----------
+  const PROFILES = [
+    { id: "antek", name: "Antek", emoji: "🧒", color: "#3776ab" },
+    { id: "tata", name: "Tata", emoji: "🧔", color: "#189d6b" }
+  ];
+  const SAVE_KEY = "misja-python-v1";
+  let store = {};
+  let activeId = PROFILES[0].id;
+  let cur = null;              // aktualna misja
+  const drafts = {};           // kod w edytorze per misja (na czas sesji)
+
+  function activeProfile() { return PROFILES.find((p) => p.id === activeId) || PROFILES[0]; }
+  function P() { // stan aktywnego profilu
+    if (!store[activeId]) store[activeId] = { xp: 0, done: {}, fails: {}, solUsed: {}, reported: {}, cur: null };
+    return store[activeId];
+  }
+  function save() {
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify({ active: activeId, profiles: store })); } catch (e) {}
+  }
+  function load() {
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (raw) { const d = JSON.parse(raw); store = d.profiles || {}; if (d.active && PROFILES.some((p) => p.id === d.active)) activeId = d.active; }
+    } catch (e) {}
+  }
+
+  const level = () => 1 + Math.floor(P().xp / XP_PER_LEVEL);
+  const doneCount = () => ALL_MISSIONS.filter((m) => P().done[m.id]).length;
+  function unlockedUpTo() { // indeks pierwszej nieukończonej misji
+    for (let i = 0; i < ALL_MISSIONS.length; i++) if (!P().done[ALL_MISSIONS[i].id]) return i;
+    return ALL_MISSIONS.length;
+  }
+
+  // ---------- odznaki ----------
+  const BADGES = [
+    { id: "start", icon: "🚀", name: "Pierwszy program", test: () => doneCount() >= 1 },
+    { id: "r1", icon: "✉️", name: "Pierwsze kroki", test: () => chapterDone("r1") },
+    { id: "r2", icon: "📦", name: "Zmienne", test: () => chapterDone("r2") },
+    { id: "r3", icon: "🚦", name: "Decyzje", test: () => chapterDone("r3") },
+    { id: "r4", icon: "🔁", name: "Pętle", test: () => chapterDone("r4") },
+    { id: "r5", icon: "🐢", name: "Mistrz żółwia", test: () => chapterDone("r5") },
+    { id: "half", icon: "⭐", name: "Połowa kursu", test: () => doneCount() >= Math.ceil(ALL_MISSIONS.length / 2) },
+    { id: "all", icon: "👑", name: "Mistrz Pythona", test: () => doneCount() === ALL_MISSIONS.length }
+  ];
+  function chapterDone(key) {
+    const ch = CHAPTERS.find((c) => c.key === key);
+    return ch.missions.every((m) => P().done[m.id]);
+  }
+
+  // ---------- raport do arkusza ----------
+  function sendReport(d) {
+    if (!REPORT.enabled) return;
+    try {
+      const body = new URLSearchParams();
+      body.append(REPORT.f.name, d.name);
+      body.append(REPORT.f.dzial, d.dzial);
+      body.append(REPORT.f.zadania, d.zadania);
+      body.append(REPORT.f.poprawne, d.poprawne);
+      body.append(REPORT.f.celnosc, d.celnosc);
+      body.append(REPORT.f.poziom, d.poziom);
+      body.append(REPORT.f.status, d.status);
+      fetch(REPORT.url, { method: "POST", mode: "no-cors", body: body });
+    } catch (e) {}
+  }
+
+  // ---------- Skulpt ----------
+  function builtinRead(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) throw "File not found: '" + x + "'";
+    return Sk.builtinFiles["files"][x];
+  }
+
+  let running = false;
+  function runCode(code, opts) {
+    return new Promise((resolve) => {
+      let out = "";
+      const stdinQueue = opts.stdin ? opts.stdin.slice() : null;
+      Sk.configure({
+        output: (t) => { out += t; consoleWrite(t, false); },
+        read: builtinRead,
+        __future__: Sk.python3,
+        execLimit: 8000,
+        inputfun: (promptText) => new Promise((res) => {
+          let val;
+          if (stdinQueue) { val = stdinQueue.length ? String(stdinQueue.shift()) : ""; }
+          else { val = window.prompt(promptText || "Program pyta — wpisz odpowiedź:"); if (val === null) val = ""; }
+          const echo = (promptText || "") + val + "\n";
+          out += echo; consoleWrite(echo, false);
+          res(val);
+        }),
+        inputfunTakesPrompt: true
+      });
+      if (opts.turtle) {
+        const tgt = $("turtleCanvas");
+        tgt.innerHTML = "";
+        Sk.TurtleGraphics = { target: "turtleCanvas", width: Math.min(tgt.clientWidth || 420, 460), height: 280 };
+      }
+      Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<stdin>", false, code, true))
+        .then(() => resolve({ output: out, error: null }),
+              (err) => resolve({ output: out, error: err.toString() }));
+    });
+  }
+
+  // ---------- konsola ----------
+  function consoleClear() { $("console").innerHTML = ""; }
+  function consoleWrite(t, isErr) {
+    const c = $("console");
+    const span = document.createElement("span");
+    if (isErr) span.className = "err";
+    span.textContent = t;
+    c.appendChild(span);
+    c.scrollTop = c.scrollHeight;
+  }
+  function consoleSys(t) {
+    const c = $("console");
+    const span = document.createElement("span");
+    span.className = "sys";
+    span.textContent = t + "\n";
+    c.appendChild(span);
+    c.scrollTop = c.scrollHeight;
+  }
+
+  // ---------- render ----------
+  function renderProfiles() {
+    const box = $("profiles"); box.innerHTML = "";
+    PROFILES.forEach((p) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "profile-tile" + (p.id === activeId ? " active" : "");
+      b.style.setProperty("--pc", p.color);
+      b.innerHTML = `<span class="pav">${p.emoji}</span>${p.name}`;
+      b.addEventListener("click", () => switchProfile(p.id));
+      box.appendChild(b);
+    });
+  }
+
+  function switchProfile(id) {
+    if (id === activeId) return;
+    activeId = id;
+    save();
+    renderProfiles(); renderSidebar(); renderBadges(); updateHud();
+    const st = P();
+    openMission(st.cur && findMission(st.cur) ? st.cur : (ALL_MISSIONS[Math.min(unlockedUpTo(), ALL_MISSIONS.length - 1)] || ALL_MISSIONS[0]).id);
+    toast(activeProfile().emoji, "Gra: " + activeProfile().name);
+  }
+
+  function findMission(id) {
+    if (id === "sandbox") return SANDBOX;
+    return ALL_MISSIONS.find((m) => m.id === id) || null;
+  }
+
+  function renderSidebar() {
+    const box = $("missionList"); box.innerHTML = "";
+    const unlocked = unlockedUpTo();
+    let idx = 0;
+    CHAPTERS.forEach((ch) => {
+      const doneIn = ch.missions.filter((m) => P().done[m.id]).length;
+      const head = document.createElement("div");
+      head.className = "chap-head";
+      head.innerHTML = `<span>${ch.icon} ${ch.name}</span><span class="cnt">${doneIn}/${ch.missions.length}</span>`;
+      box.appendChild(head);
+      ch.missions.forEach((m) => {
+        const isDone = !!P().done[m.id];
+        const isLocked = idx > unlocked;
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "mi" + (isDone ? " done" : "") + (cur && cur.id === m.id ? " cur" : "") + (isLocked ? " locked" : "");
+        b.innerHTML = `<span class="st">${isDone ? "✅" : (isLocked ? "🔒" : "▶")}</span>${m.title}`;
+        if (!isLocked) b.addEventListener("click", () => openMission(m.id));
+        box.appendChild(b);
+        idx++;
+      });
+    });
+    const sb = document.createElement("button");
+    sb.type = "button";
+    sb.className = "mi sandbox" + (cur && cur.id === "sandbox" ? " cur" : "");
+    sb.innerHTML = `<span class="st">🏖️</span>Piaskownica (wolne kodowanie)`;
+    sb.addEventListener("click", () => openMission("sandbox"));
+    box.appendChild(sb);
+  }
+
+  function renderBadges() {
+    const box = $("badges"); box.innerHTML = "";
+    BADGES.forEach((bd) => {
+      const earned = bd.test();
+      const el = document.createElement("div");
+      el.className = "badge" + (earned ? " earned" : "");
+      el.innerHTML = `<span class="bi">${bd.icon}</span>${bd.name}`;
+      box.appendChild(el);
+    });
+  }
+
+  function updateHud() {
+    $("levelVal").textContent = level();
+    $("xpTxt").textContent = P().xp + " XP";
+    $("xpBar").style.width = ((P().xp % XP_PER_LEVEL) / XP_PER_LEVEL * 100) + "%";
+  }
+
+  function openMission(id) {
+    // zapamiętaj szkic bieżącej
+    if (cur) drafts[cur.id] = $("editor").value;
+    const m = findMission(id);
+    if (!m) return;
+    cur = m;
+    if (!m.sandbox) { P().cur = id; save(); }
+    $("chapChip").textContent = m.sandbox ? "🏖️ Piaskownica" : (m.chapter.icon + " " + m.chapter.name);
+    $("mTitle").textContent = m.title;
+    $("mTheory").innerHTML = m.theory;
+    $("mTask").innerHTML = `<span class="task-label">🎯 Twoja misja</span>` + m.task;
+    $("editor").value = (drafts[m.id] !== undefined) ? drafts[m.id] : m.starter;
+    $("verdict").className = "verdict"; $("verdict").innerHTML = "";
+    $("nextBtn").hidden = true;
+    $("checkBtn").style.display = m.sandbox ? "none" : "";
+    $("hintBtn").style.display = m.sandbox ? "none" : "";
+    $("solBtn").hidden = !( !m.sandbox && (P().fails[m.id] || 0) >= 3 );
+    $("turtleWrap").hidden = !m.turtle;
+    $("ioGrid").className = "io" + (m.turtle ? " with-turtle" : "");
+    $("turtleCanvas").innerHTML = "";
+    consoleClear();
+    consoleSys(m.sandbox ? "Piaskownica — kliknij ▶ Uruchom." : "Misja: " + m.title + " — powodzenia!");
+    renderSidebar();
+    document.querySelector(".lesson").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // ---------- uruchamianie i sprawdzanie ----------
+  async function doRun() {
+    if (running) return;
+    running = true; $("runBtn").disabled = true; $("checkBtn").disabled = true;
+    consoleClear();
+    consoleSys("▶ Uruchamiam…");
+    const res = await runCode($("editor").value, { stdin: null, turtle: cur.turtle });
+    if (res.error) {
+      consoleWrite("\n" + translateErr(res.error) + "\n", true);
+      consoleWrite(res.error + "\n", true);
+    } else {
+      consoleSys("✔ Program zakończony.");
+    }
+    running = false; $("runBtn").disabled = false; $("checkBtn").disabled = false;
+  }
+
+  async function doCheck() {
+    if (running || !cur || cur.sandbox) return;
+    running = true; $("runBtn").disabled = true; $("checkBtn").disabled = true;
+    consoleClear();
+    consoleSys("🔎 Sprawdzam Twoje rozwiązanie…");
+    const code = $("editor").value;
+    const res = await runCode(code, { stdin: cur.stdin, turtle: cur.turtle });
+    const verdict = evaluateChecks(cur, code, res.output, res.error);
+    const v = $("verdict");
+    if (verdict.ok) {
+      const first = !P().done[cur.id];
+      v.className = "verdict ok show";
+      v.innerHTML = `<b>${pick(["Brawo!", "Świetna robota!", "Misja wykonana!", "Tak jest!"])} 🎉</b>` +
+        (first ? `Zdobywasz +${XP_PER_MISSION} XP.` : `Misja była już zaliczona — ale trening czyni mistrza!`);
+      if (first) award();
+      $("nextBtn").hidden = nextMissionId() === null;
+    } else {
+      P().fails[cur.id] = (P().fails[cur.id] || 0) + 1;
+      save();
+      v.className = "verdict no show";
+      let html = `<b>Jeszcze nie! 🤔</b>${escapeHtml(verdict.msg)}`;
+      if (verdict.expected !== undefined) {
+        html += `<pre>Twój wynik:\n${escapeHtml(verdict.got || "(nic)")}\n\nOczekiwany:\n${escapeHtml(verdict.expected)}</pre>`;
+      } else if (verdict.got) {
+        html += `<pre>Twój wynik:\n${escapeHtml(verdict.got)}</pre>`;
+      }
+      if (verdict.detail) html += `<span class="orig-err">${escapeHtml(verdict.detail)}</span>`;
+      v.innerHTML = html;
+      if ((P().fails[cur.id] || 0) >= 3) $("solBtn").hidden = false;
+    }
+    running = false; $("runBtn").disabled = false; $("checkBtn").disabled = false;
+  }
+
+  function nextMissionId() {
+    const i = ALL_MISSIONS.findIndex((m) => m.id === cur.id);
+    if (i >= 0 && i + 1 < ALL_MISSIONS.length) return ALL_MISSIONS[i + 1].id;
+    return null;
+  }
+
+  function award() {
+    P().done[cur.id] = true;
+    P().xp += XP_PER_MISSION;
+    const lvlBefore = Math.floor((P().xp - XP_PER_MISSION) / XP_PER_LEVEL);
+    const lvlAfter = Math.floor(P().xp / XP_PER_LEVEL);
+    save();
+    confetti(24);
+    if (lvlAfter > lvlBefore) { toast("🆙", "Poziom " + level() + "!"); confetti(40); }
+    // odznaki
+    BADGES.forEach((bd) => {
+      const key = "b_" + bd.id;
+      if (!P()[key] && bd.test()) { P()[key] = true; toast(bd.icon, "Odznaka: " + bd.name + "!"); }
+    });
+    // raport po ukończeniu rozdziału
+    const ch = cur.chapter;
+    if (ch && ch.missions.every((m) => P().done[m.id]) && !P().reported[ch.key]) {
+      P().reported[ch.key] = true;
+      const total = ch.missions.length;
+      const noSol = ch.missions.filter((m) => !P().solUsed[m.id]).length;
+      sendReport({
+        name: activeProfile().name,
+        dzial: "Python · " + ch.name,
+        zadania: String(total),
+        poprawne: String(total),
+        celnosc: Math.round(noSol / total * 100) + "%",
+        poziom: String(level()),
+        status: "Ukończony"
+      });
+      setTimeout(() => toast("📤", "Rozdział „" + ch.name + "” ukończony — raport wysłany!"), 900);
+    }
+    save();
+    renderSidebar(); renderBadges(); updateHud();
+  }
+
+  // ---------- pomoc ----------
+  $("hintBtn").addEventListener("click", () => {
+    if (!cur || !cur.hint) return;
+    const v = $("verdict");
+    v.className = "verdict hint show";
+    v.innerHTML = `<b>💡 Podpowiedź</b>${cur.hint}`;
+  });
+  $("solBtn").addEventListener("click", () => {
+    if (!cur || !cur.solution) return;
+    P().solUsed[cur.id] = true; save();
+    $("editor").value = cur.solution;
+    toast("🔓", "Wstawiono rozwiązanie — przeczytaj je i kliknij Sprawdź.");
+  });
+  $("resetCode").addEventListener("click", () => {
+    if (!cur) return;
+    $("editor").value = cur.starter;
+    delete drafts[cur.id];
+  });
+
+  $("runBtn").addEventListener("click", doRun);
+  $("checkBtn").addEventListener("click", doCheck);
+  $("nextBtn").addEventListener("click", () => { const n = nextMissionId(); if (n) openMission(n); });
+
+  // Tab = 4 spacje, Ctrl+Enter = sprawdź
+  $("editor").addEventListener("keydown", (e) => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const el = e.target, s = el.selectionStart, en = el.selectionEnd;
+      el.value = el.value.slice(0, s) + "    " + el.value.slice(en);
+      el.selectionStart = el.selectionEnd = s + 4;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      if (cur && cur.sandbox) doRun(); else doCheck();
+    }
+  });
+
+  // ---------- motyw ----------
+  function applyTheme(mode) {
+    document.documentElement.setAttribute("data-theme", mode);
+    $("themeBtn").textContent = mode === "dark" ? "☀️" : "🌙";
+  }
+  $("themeBtn").addEventListener("click", () => {
+    const curTheme = document.documentElement.getAttribute("data-theme");
+    const isDark = curTheme ? curTheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    applyTheme(isDark ? "light" : "dark");
+  });
+
+  // ---------- toast + confetti ----------
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+  function toast(emoji, text) {
+    const layer = $("toastLayer");
+    const t = document.createElement("div");
+    t.className = "toast";
+    t.innerHTML = `<span class="te">${emoji}</span>${escapeHtml(text)}`;
+    layer.appendChild(t);
+    setTimeout(() => { t.classList.add("out"); setTimeout(() => t.remove(), 320); }, 2400);
+  }
+  function confetti(n) {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const colors = ["#ffd43b", "#3776ab", "#35c98e", "#ff6d84", "#5ba3d9"];
+    for (let i = 0; i < n; i++) {
+      const c = document.createElement("div");
+      c.className = "confetti";
+      c.style.left = Math.floor(Math.random() * 100) + "vw";
+      c.style.background = pick(colors);
+      const rot = Math.floor(Math.random() * 360);
+      document.body.appendChild(c);
+      c.animate(
+        [{ transform: `rotate(${rot}deg)`, opacity: 1 }, { transform: `translate(${Math.floor(Math.random() * 120 - 60)}vw, ${Math.floor(Math.random() * 40 + 60)}vh) rotate(${rot + 540}deg)`, opacity: 0 }],
+        { duration: 1400 + Math.floor(Math.random() * 900), easing: "cubic-bezier(.2,.6,.4,1)" }
+      ).onfinish = () => c.remove();
+    }
+  }
+
+  // ---------- start ----------
+  load();
+  renderProfiles();
+  renderBadges();
+  updateHud();
+  const st = P();
+  openMission(st.cur && findMission(st.cur) ? st.cur : ALL_MISSIONS[Math.min(unlockedUpTo(), ALL_MISSIONS.length - 1)].id);
+})();
+</script>
+</body>
+</html>

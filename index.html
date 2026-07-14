@@ -815,12 +815,20 @@
   let store = {};
   let activeId = PROFILES[0].id;
   let cur = null;              // aktualna misja
-  const drafts = {};           // kod w edytorze per misja (na czas sesji)
 
   function activeProfile() { return PROFILES.find((p) => p.id === activeId) || PROFILES[0]; }
   function P() { // stan aktywnego profilu
-    if (!store[activeId]) store[activeId] = { xp: 0, done: {}, fails: {}, solUsed: {}, reported: {}, cur: null };
+    if (!store[activeId]) store[activeId] = { xp: 0, done: {}, fails: {}, solUsed: {}, reported: {}, drafts: {}, cur: null };
+    if (!store[activeId].drafts) store[activeId].drafts = {}; // migracja starszych zapisów
     return store[activeId];
+  }
+  // trwały zapis kodu z edytora (per profil i misja); kod równy startowemu nie zaśmieca zapisu
+  function saveDraft() {
+    if (!cur) return;
+    const val = $("editor").value;
+    if (val === cur.starter) delete P().drafts[cur.id];
+    else P().drafts[cur.id] = val;
+    save();
   }
   function save() {
     try { localStorage.setItem(SAVE_KEY, JSON.stringify({ active: activeId, profiles: store })); } catch (e) {}
@@ -1005,7 +1013,7 @@
 
   function openMission(id) {
     // zapamiętaj szkic bieżącej
-    if (cur) drafts[cur.id] = $("editor").value;
+    saveDraft();
     const m = findMission(id);
     if (!m) return;
     cur = m;
@@ -1014,7 +1022,7 @@
     $("mTitle").textContent = m.title;
     $("mTheory").innerHTML = m.theory;
     $("mTask").innerHTML = `<span class="task-label">🎯 Twoja misja</span>` + m.task;
-    $("editor").value = (drafts[m.id] !== undefined) ? drafts[m.id] : m.starter;
+    $("editor").value = (P().drafts[m.id] !== undefined) ? P().drafts[m.id] : m.starter;
     $("verdict").className = "verdict"; $("verdict").innerHTML = "";
     $("nextBtn").hidden = true;
     $("checkBtn").style.display = m.sandbox ? "none" : "";
@@ -1142,19 +1150,29 @@
   });
   $("solBtn").addEventListener("click", () => {
     if (!cur || !cur.solution) return;
-    P().solUsed[cur.id] = true; save();
+    P().solUsed[cur.id] = true;
     $("editor").value = cur.solution;
+    saveDraft();
     toast("🔓", "Wstawiono rozwiązanie — przeczytaj je i kliknij Sprawdź.");
   });
   $("resetCode").addEventListener("click", () => {
     if (!cur) return;
     $("editor").value = cur.starter;
-    delete drafts[cur.id];
+    delete P().drafts[cur.id];
+    save();
   });
 
   $("runBtn").addEventListener("click", doRun);
   $("checkBtn").addEventListener("click", doCheck);
   $("nextBtn").addEventListener("click", () => { const n = nextMissionId(); if (n) openMission(n); });
+
+  // autozapis kodu podczas pisania (po 600 ms ciszy) + przy zamykaniu strony
+  let draftTimer = null;
+  $("editor").addEventListener("input", () => {
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(saveDraft, 600);
+  });
+  window.addEventListener("beforeunload", saveDraft);
 
   // Tab = 4 spacje, Ctrl+Enter = sprawdź
   $("editor").addEventListener("keydown", (e) => {
